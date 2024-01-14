@@ -10,8 +10,9 @@ jQuery(document).ready(function ($) {
         action: "notes_plugin_save_note",
         note: note,
         post_id: postID,
-        security: notesPluginAjax.security
+        security: jQuery("#notes_plugin_nonce_field").val()
       },
+
       success: function (response) {
         if (response.success) {
           $("#notes_plugin_notes").append(

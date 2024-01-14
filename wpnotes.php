@@ -39,6 +39,10 @@ function notes_plugin_custom_box_html($post) {
     $notes = get_post_meta($post->ID, '_notes_plugin_notes', true);
     $notes = $notes ? json_decode($notes, true) : [];
 
+    // Add a nonce field for security
+    wp_nonce_field('notes_plugin_ajax_nonce', 'notes_plugin_nonce_field');
+  
+
     // Display the notes
     echo '<div id="notes_plugin_notes">';
     foreach ($notes as $note) {
@@ -53,6 +57,9 @@ function notes_plugin_custom_box_html($post) {
 
 
 function notes_plugin_save_note() {
+    if (!check_ajax_referer('notes_plugin_ajax_nonce', 'security', false)) {
+        wp_send_json_error('Nonce verification failed', 403);
+    }
     check_ajax_referer('notes_plugin_ajax_nonce', 'security');
 
     $post_id = $_POST['post_id'];
